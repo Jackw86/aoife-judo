@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#18181b"><title>Aoife's Judo Guide</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥋</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fafafa;--card:rgba(255,255,255,.85);--glass:rgba(255,255,255,.6);--border:rgba(0,0,0,.06);--text:#18181b;--muted:#71717a;--accent:#7c3aed;--success:#16a34a;--danger:#dc2626;--warn:#f59e0b;--r:14px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{height:100%;overflow:hidden}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+#app{height:100dvh;display:flex;flex-direction:column;overflow:hidden;position:relative}
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideL{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideR{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideD{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{0%{transform:scale(0)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes confettiF{0%{transform:translateY(-10px) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+@keyframes glow{0%,100%{box-shadow:0 0 8px rgba(124,58,237,.3)}50%{box-shadow:0 0 20px rgba(124,58,237,.6)}}
+/* Black Fluff Cat SVG — used via JS function */
+
+/* Header */
+.hdr{padding:8px 14px;display:flex;align-items:center;gap:8;background:rgba(255,255,255,.8);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);flex-shrink:0;z-index:10}
+.hb{cursor:pointer;border:none;background:var(--accent);color:#fff;border-radius:10px;padding:6px 10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;display:flex;align-items:center;gap:4;box-shadow:0 2px 8px rgba(124,58,237,.25)}
+.hb:active{transform:scale(.95);opacity:.9}
+.ht{flex:1;text-align:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;color:var(--muted)}
+.hpr{position:relative;width:34px;height:34px;flex-shrink:0}
+.hpr svg{width:34px;height:34px}
+.hpr .l{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:9px;font-family:'Space Grotesk',sans-serif}
+
+/* Glass card */
+.gc{background:var(--card);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+
+/* Overlay */
+.ov{position:absolute;inset:0;z-index:100}
+.ob{position:absolute;inset:0;background:rgba(0,0,0,.3);backdrop-filter:blur(4px)}
+.np{position:relative;z-index:1;background:#fff;border-radius:0 0 20px 20px;max-height:85dvh;overflow-y:auto;box-shadow:0 8px 30px rgba(0,0,0,.15);animation:slideD .2s}
+.nl{padding:6px 10px 14px;display:flex;flex-direction:column;gap:3px}
+.ni{cursor:pointer;border:none;border-radius:10px;text-align:left;padding:9px 12px;font-family:'Nunito',sans-serif;transition:all .15s}
+.ni:active{transform:scale(.97)}.ni.lk{opacity:.25;pointer-events:none}
+.nr{display:flex;align-items:center;gap:8;font-weight:800;font-size:11px}
+
+/* Content */
+.ct{flex:1;overflow-y:auto;padding:14px 12px 100px}
+.ct::-webkit-scrollbar{width:0}
+.sl-l .gc,.sl-l .chd{animation:slideL .3s ease}.sl-r .gc,.sl-r .chd{animation:slideR .3s ease}
+
+/* Chapter header */
+.chd{border-radius:var(--r);padding:20px 16px;margin-bottom:12px;color:#fff;position:relative;overflow:hidden}
+.chd .bg{position:absolute;top:-10px;right:-10px;font-size:64px;opacity:.12;transform:rotate(12deg)}
+.chd .n{font-family:'Space Grotesk',sans-serif;font-size:9px;font-weight:700;opacity:.7;text-transform:uppercase;letter-spacing:2px;margin-bottom:3px}
+.chd .t{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;line-height:1.2;margin-bottom:2px}
+.chd .s{font-size:11px;opacity:.85;font-weight:600}
+
+/* Text */
+.intro{font-size:12.5px;line-height:1.65;font-weight:600;color:#444;border-left:3px solid;padding-left:12px}
+.aoife{background:linear-gradient(135deg,#fdf2f8,#fce7f3);border:1.5px solid #f9a8d4;border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:11px;font-weight:700;color:#9d174d;line-height:1.5}
+.aoife .lb{font-family:'Space Grotesk',sans-serif;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#be185d;margin-bottom:2px}
+.bt{font-size:12px;line-height:1.65;font-weight:500;color:#444;margin-bottom:3px}.bt b{color:#111;font-weight:800}.bt u{text-decoration:none;color:#6d28d9;font-weight:700}
+
+/* Steps */
+.stl{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;margin-bottom:6px;display:flex;align-items:center;gap:5}
+.badge{font-size:9px;font-family:'Nunito',sans-serif;font-weight:700;padding:2px 6px;border-radius:20px}
+.step{display:flex;align-items:flex-start;gap:8px;padding:7px 8px;border-radius:8px;cursor:pointer;margin-bottom:2px;transition:background .15s}
+.step:active{transform:scale(.98)}
+.chk{width:18px;height:18px;border-radius:5px;flex-shrink:0;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:900;margin-top:1px;transition:all .2s}
+.stxt{font-size:11px;font-weight:600;line-height:1.4}.stxt.dn{color:#aaa;text-decoration:line-through}
+
+/* Facts */
+.fact{border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:9px}
+.fact .ico{font-size:20px;flex-shrink:0}.fact .lb{font-family:'Space Grotesk',sans-serif;font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:1px}
+.fact .tx{font-size:11px;font-weight:700;line-height:1.35}
+.f-fluff{background:#1a1a2e;color:#fff}.f-fluff .lb{color:#a78bfa}
+.f-jp{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}.f-jp .lb{color:#fca5a5}
+
+/* Drills */
+.drill{cursor:pointer;border-radius:8px;padding:8px 10px;font-family:inherit;font-size:10px;font-weight:700;text-align:left;width:100%;display:flex;align-items:center;gap:7px;margin-bottom:4px;border:1.5px solid;transition:all .15s}
+.drill:active{transform:scale(.98)}
+
+/* Quiz */
+.qbox{border-radius:var(--r);padding:14px;margin-bottom:10px;border:2px solid}
+.qbox .title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;text-align:center}
+.qbox .sub{font-size:10px;font-weight:600;color:var(--muted);text-align:center;margin-bottom:10px}
+.qq{font-weight:800;font-size:11.5px;margin:10px 0 4px;color:var(--text)}
+.qa{cursor:pointer;border:1.5px solid #e4e4e7;border-radius:8px;padding:9px 11px;margin-bottom:4px;font-size:11px;font-weight:700;transition:all .15s}
+.qa:active{opacity:.8}.qa.ok{background:#dcfce7;border-color:var(--success);color:#166534;pointer-events:none}
+.qa.no{background:#fee2e2;border-color:var(--danger);color:#991b1b;pointer-events:none}
+.qa.ds{pointer-events:none;opacity:.3}
+
+/* Type correction box */
+.typebox{margin:6px 0 10px;display:flex;gap:6px}
+.typebox input{flex:1;border:2px solid var(--danger);border-radius:8px;padding:8px 10px;font-family:inherit;font-size:11px;font-weight:600}
+.typebox button{border:none;background:var(--accent);color:#fff;border-radius:8px;padding:8px 12px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:10px;cursor:pointer}
+
+/* Deep learning sections */
+.deep{border-radius:var(--r);padding:14px;margin-bottom:10px;border:2px solid #a78bfa;background:linear-gradient(135deg,#f5f3ff,#ede9fe)}
+.deep .title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:#6d28d9;margin-bottom:8px}
+.deep .q{font-size:11px;font-weight:700;color:#4c1d95;margin-bottom:4px;line-height:1.4}
+.deep textarea{width:100%;border:1.5px solid #c4b5fd;border-radius:8px;padding:8px;font-family:inherit;font-size:11px;min-height:60px;margin-bottom:6px;resize:vertical}
+.deep .saved{font-size:9px;color:var(--success);font-weight:700}
+
+/* Trigger card */
+.trigger{background:linear-gradient(135deg,#fef3c7,#fde68a);border:1.5px solid #f59e0b;border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.trigger .lb{font-family:'Space Grotesk',sans-serif;font-size:8px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.trigger .tx{font-size:11px;font-weight:700;color:#78350f;line-height:1.4}
+
+/* Home */
+.home{padding:16px 12px}
+.hello{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;color:var(--text)}
+.sub{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:14px}
+.cd-box{background:linear-gradient(135deg,var(--accent),#6d28d9);border-radius:var(--r);padding:16px;color:#fff;text-align:center;margin-bottom:12px}
+.cd-days{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:40px}
+.cd-label{font-size:10px;font-weight:700;opacity:.8}
+.streak-box{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.streak-n{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;color:var(--danger)}
+.streak-i{font-size:10px;font-weight:600;color:var(--muted);line-height:1.4}
+.streak-b{cursor:pointer;border:none;background:var(--success);color:#fff;border-radius:8px;padding:8px 14px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;margin-left:auto}
+.streak-b:active{transform:scale(.95)}.streak-b.dn{background:#d4d4d8;color:#a1a1aa}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.gcard{cursor:pointer;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:14px 10px;text-align:center;transition:all .15s}
+.gcard:active{transform:scale(.96)}.gcard .em{font-size:28px;margin-bottom:3px}
+.gcard .nm{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;color:var(--text)}
+.gcard .ds{font-size:9px;color:var(--muted);font-weight:600;margin-top:2px}
+
+/* Pre-training */
+.pre-train{padding:16px 12px}
+.pre-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:8px}
+.pre-card .lb{font-family:'Space Grotesk',sans-serif;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:4px}
+.pre-card .tx{font-size:12px;font-weight:700;color:var(--text);line-height:1.5}
+
+/* Post-training log */
+.log-entry textarea{width:100%;border:1.5px solid #d4d4d8;border-radius:8px;padding:8px;font-family:inherit;font-size:11px;min-height:50px;margin-bottom:6px;resize:vertical}
+.log-past{font-size:10px;color:var(--muted);font-weight:600;line-height:1.5;margin-top:4px;padding:8px;background:#f4f4f5;border-radius:8px}
+
+/* Games */
+.game-area{position:relative;width:100%;height:320px;background:linear-gradient(180deg,#0f172a 0%,#1e293b 40%,#334155 100%);border-radius:var(--r);overflow:hidden;margin-bottom:10px;touch-action:none}
+.game-area .mouse{position:absolute;cursor:pointer;transition:none;font-size:22px}
+.game-area .fake{position:absolute;cursor:pointer;font-size:20px}
+.game-area .hud{position:absolute;top:8px;width:100%;display:flex;justify-content:space-between;padding:0 12px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.game-area .cat-game{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:32px}
+.game-area .stars{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;opacity:.5}
+
+/* Capybara */
+.capy{background:linear-gradient(135deg,#fef3c7,#fbbf24);border:3px solid #f59e0b;border-radius:18px;padding:18px;margin-bottom:12px;text-align:center;animation:pop .5s}
+.capy .em{font-size:52px;animation:float 3s ease-in-out infinite}
+.capy h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:#92400e;margin:6px 0 2px}
+.capy p{font-size:11px;color:#a16207;font-weight:600}
+
+/* Dad's message */
+.dad{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #60a5fa;border-radius:var(--r);padding:16px;margin-bottom:12px;text-align:center}
+.dad h3{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:#1e40af;margin:8px 0 6px}
+.dad p{font-size:11px;font-weight:600;color:#1e3a5f;line-height:1.6}
+
+/* Stats */
+.srow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f4f4f5}
+.srow:last-child{border:none}.slb{font-size:11px;font-weight:600;color:var(--muted)}
+.svl{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:var(--text)}
+
+/* Confetti */
+.conf{position:fixed;width:8px;height:8px;top:-10px;z-index:200;border-radius:2px;animation:confettiF 2.5s ease-out forwards;pointer-events:none}
+
+/* Bottom nav */
+.bn{position:absolute;bottom:0;left:0;right:0;padding:6px 12px 12px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to top,rgba(250,250,250,.98) 60%,transparent);z-index:10}
+.ar{cursor:pointer;border:none;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;box-shadow:0 2px 8px rgba(0,0,0,.08);color:#fff;font-family:'Space Grotesk',sans-serif}
+.ar:active{transform:scale(.9)}.ar:disabled{opacity:.25}
+.dots{display:flex;gap:2px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:55%}
+.d{height:5px;border-radius:3px;border:none;cursor:pointer;transition:all .3s}
+
+/* Daily drill */
+.dd-q{font-weight:800;font-size:12px;margin:10px 0 4px}
+</style>
+</head><body><div id="app"></div>
+<script src="data.js"></script>
+<script>
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+// Black Fluff SVG
+function fluff(s=32){return`<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><path d="M${s*.15} ${s*.75}Q${s*.02} ${s*.55} ${s*.12} ${s*.45}" stroke="#111" stroke-width="${s*.04}" fill="none" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" values="-8 ${s*.15} ${s*.75};8 ${s*.15} ${s*.75};-8 ${s*.15} ${s*.75}" dur="2s" repeatCount="indefinite"/></path><ellipse cx="${s*.5}" cy="${s*.72}" rx="${s*.25}" ry="${s*.18}" fill="#111"/><circle cx="${s*.5}" cy="${s*.42}" r="${s*.2}" fill="#111"/><polygon points="${s*.32},${s*.26} ${s*.28},${s*.12} ${s*.42},${s*.24}" fill="#111"/><polygon points="${s*.68},${s*.26} ${s*.72},${s*.12} ${s*.58},${s*.24}" fill="#111"/><polygon points="${s*.34},${s*.25} ${s*.31},${s*.17} ${s*.40},${s*.24}" fill="#222"/><polygon points="${s*.66},${s*.25} ${s*.69},${s*.17} ${s*.60},${s*.24}" fill="#222"/><ellipse cx="${s*.38}" cy="${s*.38}" rx="${s*.045}" ry="${s*.06}" fill="#22c55e"><animate attributeName="ry" values="${s*.06};${s*.008};${s*.06}" dur="4s" repeatCount="indefinite"/></ellipse><ellipse cx="${s*.62}" cy="${s*.38}" rx="${s*.045}" ry="${s*.06}" fill="#22c55e"><animate attributeName="ry" values="${s*.06};${s*.008};${s*.06}" dur="4s" begin=".2s" repeatCount="indefinite"/></ellipse><ellipse cx="${s*.38}" cy="${s*.39}" rx="${s*.018}" ry="${s*.04}" fill="#000"/><ellipse cx="${s*.62}" cy="${s*.39}" rx="${s*.018}" ry="${s*.04}" fill="#000"/><ellipse cx="${s*.5}" cy="${s*.45}" rx="${s*.02}" ry="${s*.012}" fill="#333"/><path d="M${s*.45} ${s*.48}Q${s*.5} ${s*.51} ${s*.55} ${s*.48}" stroke="#333" stroke-width="${s*.008}" fill="none"/><line x1="${s*.28}" y1="${s*.43}" x2="${s*.12}" y2="${s*.39}" stroke="#333" stroke-width="${s*.006}"/><line x1="${s*.28}" y1="${s*.45}" x2="${s*.11}" y2="${s*.46}" stroke="#333" stroke-width="${s*.006}"/><line x1="${s*.72}" y1="${s*.43}" x2="${s*.88}" y2="${s*.39}" stroke="#333" stroke-width="${s*.006}"/><line x1="${s*.72}" y1="${s*.45}" x2="${s*.89}" y2="${s*.46}" stroke="#333" stroke-width="${s*.006}"/><ellipse cx="${s*.40}" cy="${s*.87}" rx="${s*.06}" ry="${s*.035}" fill="#111"/><ellipse cx="${s*.60}" cy="${s*.87}" rx="${s*.06}" ry="${s*.035}" fill="#111"/></svg>`}
+
+// State
+let V='home',ac=0,cs={},dd={},sn=0,qa={},passed={},sp=0,sDir='l';
+let streak={c:0,l:'',b:0},sBest=Infinity,deepAnswers={},trainLog=[];
+let wrongTyping={},fluffMsg='',fluffT=null;
+let gS={};// game state
+
+function ld(){try{const s=localStorage.getItem('aj11');if(s){const d=JSON.parse(s);cs=d.c||{};dd=d.d||{};qa=d.q||{};passed=d.p||{};streak=d.st||{c:0,l:'',b:0};sBest=d.sb||Infinity;deepAnswers=d.da||{};trainLog=d.tl||[];wrongTyping=d.wt||{}}}catch(e){}}
+function sv(){try{localStorage.setItem('aj11',JSON.stringify({c:cs,d:dd,q:qa,p:passed,st:streak,sb:sBest,da:deepAnswers,tl:trainLog,wt:wrongTyping}))}catch(e){}}
+function rst(){if(confirm('Reset ALL progress? Cannot be undone!')){localStorage.removeItem('aj11');location.reload()}}
+ld();
+
+// Helpers
+function ul(i){return i===0||!!passed[CH[i-1].id]}
+function qsc(cid){const c=CH.find(x=>x.id===cid);if(!c?.quiz)return{d:0,ok:0,t:0};let d=0,ok=0;c.quiz.forEach((_,i)=>{const k=cid+'-'+i;if(qa[k]!==undefined){d++;if(qa[k]===c.quiz[i].c)ok++}});return{d,ok,t:c.quiz.length}}
+function gp(){let t=0,d=0;CH.forEach(c=>{t+=c.steps.length+2;d+=(cs[c.id]||[]).length+(dd[c.id+'-p']?1:0)+(dd[c.id+'-s']?1:0)});return Math.round((d/t)*100)}
+function dTV(){return Math.max(0,Math.ceil((new Date('2026-06-20')-new Date())/(1000*60*60*24)))}
+function dTip(){const t=CH.flatMap(c=>[c.fact,c.fluff].filter(Boolean));return t[Math.floor(Date.now()/(864e5))%t.length]}
+function allP(){return CH.every(x=>!!passed[x.id])}
+function conf(){const cl=['#7c3aed','#ec4899','#f59e0b','#22c55e','#3b82f6','#ef4444'];for(let i=0;i<35;i++){const e=document.createElement('div');e.className='conf';e.style.cssText=`left:${Math.random()*100}%;background:${cl[i%cl.length]};animation-delay:${Math.random()*.4}s;animation-duration:${2+Math.random()}s`;document.body.appendChild(e);setTimeout(()=>e.remove(),3500)}}
+function sFluff(m){fluffMsg=m;clearTimeout(fluffT);rn(1);fluffT=setTimeout(()=>{fluffMsg='';rn(1)},2000)}
+
+// Chapter actions
+function ts(id,i){if(!cs[id])cs[id]=[];const a=cs[id],x=a.indexOf(i);x===-1?a.push(i):a.splice(x,1);sv();rn(1)}
+function tdr(k){dd[k]=!dd[k];sv();rn(1)}
+function nv(i){if(i===ac||i<0||i>=CH.length||!ul(i))return;sDir=i>ac?'l':'r';ac=i;sn=0;V='ch';rn();document.getElementById('ct')?.scrollTo({top:0})}
+function aq2(ci,qi,ai){const k=ci+'-'+qi;if(qa[k]!==undefined)return;qa[k]=ai;const c=CH.find(x=>x.id===ci);const ok=ai===c.quiz[qi].c;
+if(!ok){wrongTyping[k]={correct:c.quiz[qi].a[c.quiz[qi].c],typed:false};sFluff('Not quite — type the right answer!')}
+else sFluff('Yes! ✓');
+const s=qsc(ci);if(s.d===s.t&&s.ok===s.t){passed[ci]=true;conf();sFluff('TEST PASSED! 🏆')}
+sv();rn(1)}
+function typeCorrect(k){const inp=document.getElementById('ti-'+k);if(!inp)return;const v=inp.value.trim().toLowerCase();const target=wrongTyping[k]?.correct?.toLowerCase()||'';if(v.length>=3&&target.includes(v)){wrongTyping[k].typed=true;sv();sFluff('Got it! ✓');rn(1)}}
+function rq(ci){CH.find(x=>x.id===ci)?.quiz?.forEach((_,i)=>{delete qa[ci+'-'+i];delete wrongTyping[ci+'-'+i]});delete passed[ci];sv();rn(1)}
+function saveDeep(key){const el=document.getElementById('deep-'+key);if(el){deepAnswers[key]=el.value;sv();sFluff('Saved! ✓')}}
+function logTrain(){const t=new Date().toDateString();if(streak.l===t)return;const y=new Date(Date.now()-864e5).toDateString();streak.l===y?streak.c++:streak.c=1;streak.l=t;if(streak.c>streak.b)streak.b=streak.c;sv();sFluff('Training logged! 🔥');rn()}
+function saveLog(){const w=document.getElementById('log-w')?.value||'';const f=document.getElementById('log-f')?.value||'';const n=document.getElementById('log-n')?.value||'';if(!w&&!f&&!n)return;trainLog.unshift({d:new Date().toLocaleDateString(),w,f,n});if(trainLog.length>20)trainLog.pop();sv();sFluff('Log saved! ✓');rn(1)}
+
+// ===== RENDER =====
+function rn(keep){
+const ct=document.getElementById('ct');if(keep&&ct)sp=ct.scrollTop;
+const a=document.getElementById('app');let h='';
+if(V==='home')h=rHome();
+else if(V==='ch')h=rCh();
+else if(V==='stats')h=rStats();
+else if(V==='pre')h=rPre();
+else if(V==='post')h=rPost();
+else if(V==='daily')h=rDaily();
+else if(V==='match')h=rMatch();
+else if(V==='speed')h=rSpeed();
+else if(V==='hunt')h=rHunt();
+// Fluff msg
+if(fluffMsg)h+=`<div style="position:fixed;bottom:80px;right:8px;z-index:50;display:flex;align-items:end;gap:4px;pointer-events:none;animation:fadeUp .3s"><div style="background:#fff;border:1.5px solid #a78bfa;border-radius:10px;padding:5px 9px;font-size:10px;font-weight:700;color:#6d28d9;max-width:110px">${fluffMsg}</div>${fluff(28)}</div>`;
+a.innerHTML=h;
+if(keep&&V==='ch'){const c2=document.getElementById('ct');if(c2)c2.scrollTop=sp}}
+
+// ===== HOME =====
+function rHome(){
+const p=gp(),d=dTV(),tip=dTip(),today=new Date().toDateString(),trained=streak.l===today;
+let h=`<div style="flex:1;overflow-y:auto"><div class="home">`;
+h+=`<div style="display:flex;align-items:center;justify-content:space-between"><div><div class="hello">Hi Aoife 🥋</div><div class="sub">Let's get ready for Venray</div></div><div style="animation:float 3s ease-in-out infinite">${fluff(44)}</div></div>`;
+if(allP())h+=`<div class="capy"><div class="em">🏆🐹🏆</div><h2>GOLDEN CAPYBARA!</h2><p>You completed everything!</p></div>`;
+h+=`<div class="cd-box"><div class="cd-days">${d}</div><div class="cd-label">days to Venray 🇳🇱</div></div>`;
+h+=`<div class="gc streak-box"><div><div class="streak-n">🔥 ${streak.c}</div></div><div class="streak-i">day streak<br>Best: ${streak.b}</div><button class="streak-b ${trained?'dn':''}" onclick="${trained?'':'logTrain()'}">${trained?'✅ Done!':'Trained today!'}</button></div>`;
+h+=`<div class="gc"><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:10px;color:var(--accent);margin-bottom:3px">💡 TODAY'S TIP</div><div style="font-size:11px;font-weight:600;line-height:1.5;color:#444">${tip}</div></div>`;
+h+=`<div class="gc" style="text-align:center"><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;color:var(--accent);margin-bottom:4px">${Object.keys(passed).length}/${CH.length} chapters passed</div><div style="background:#e4e4e7;border-radius:6px;height:8px;overflow:hidden"><div style="background:var(--accent);height:100%;width:${Object.keys(passed).length/CH.length*100}%;border-radius:6px;transition:width .5s"></div></div></div>`;
+h+=`<div class="grid">`;
+h+=`<div class="gcard" onclick="V='ch';ac=0;rn()"><div class="em">📖</div><div class="nm">Chapters</div><div class="ds">${Object.keys(passed).length} passed</div></div>`;
+h+=`<div class="gcard" onclick="V='daily';startDaily();rn()"><div class="em">🧠</div><div class="nm">Daily Drill</div><div class="ds">5 random Qs</div></div>`;
+h+=`<div class="gcard" onclick="V='pre';rn()"><div class="em">🚗</div><div class="nm">Pre-Training</div><div class="ds">Car checklist</div></div>`;
+h+=`<div class="gcard" onclick="V='post';rn()"><div class="em">📝</div><div class="nm">Training Log</div><div class="ds">${trainLog.length} entries</div></div>`;
+h+=`<div class="gcard" onclick="V='match';startMG();rn()"><div class="em">🎯</div><div class="nm">Throw Match</div></div>`;
+h+=`<div class="gcard" onclick="V='speed';startSQ();rn()"><div class="em">⏱️</div><div class="nm">Speed Quiz</div><div class="ds">${sBest<Infinity?(sBest/1000).toFixed(1)+'s':'--'}</div></div>`;
+h+=`<div class="gcard" onclick="V='hunt';startHunt();rn()"><div class="em">🐱</div><div class="nm">Fluff's Hunt</div><div class="ds">Catch mice!</div></div>`;
+h+=`<div class="gcard" onclick="V='stats';rn()"><div class="em">📊</div><div class="nm">Stats</div></div>`;
+h+=`</div>`;
+if(allP())h+=`<div class="dad"><div style="font-size:28px">💌</div><h3>A Message From Dad</h3><p>Aoife, I am so proud of you. You've worked so hard to get here. Go out at Venray and show them what you're made of. Win or lose, you're already a champion. I love you. ❤️</p></div>`;
+h+=`<button onclick="rst()" style="width:100%;border:1.5px solid #e4e4e7;background:#fff;border-radius:10px;padding:8px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:10px;color:var(--muted);cursor:pointer;margin-top:4px">🔄 Reset All</button>`;
+h+=`</div></div>`;return h}
+
+// ===== CHAPTER (abbreviated for space — same structure as before but with deep learning sections added) =====
+function rCh(){
+const c=CH[ac],dn=cs[c.id]||[];
+let h=`<div class="hdr" style="border-bottom-color:${c.color}"><button class="hb" style="background:${c.color}" onclick="V='home';rn()">🏠</button><button class="hb" style="background:${c.color}" onclick="sn=1;rn()">📖</button><div class="ht" style="color:${c.color}">${c.title}</div><div class="hpr"><svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="13" fill="none" stroke="#e4e4e7" stroke-width="2.5"/><circle cx="17" cy="17" r="13" fill="none" stroke="${c.color}" stroke-width="2.5" stroke-dasharray="${(gp()/100)*81.7} 81.7" stroke-linecap="round" transform="rotate(-90 17 17)"/></svg><div class="l" style="color:${c.color}">${gp()}%</div></div></div>`;
+if(sn){h+=`<div class="ov"><div class="ob" onclick="sn=0;rn()"></div><div class="np"><div style="padding:12px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px">📖 Chapters</div><div class="nl">`;
+CH.forEach((x,i)=>{const u=ul(i),v=i===ac;h+=`<button class="ni ${u?'':'lk'}" onclick="nv(${i})" style="background:${v?`linear-gradient(135deg,${x.color},${x.color}dd)`:x.color+'10'};color:${v?'#fff':'#333'}"><div class="nr"><span style="font-size:13px">${u?x.icon:'🔒'}</span><span style="flex:1;font-size:10px">${x.title}</span>${passed[x.id]?'✅':''}</div></button>`});h+=`</div></div></div>`}
+h+=`<div id="ct" class="ct sl-${sDir}">`;
+h+=`<div class="chd" style="background:linear-gradient(135deg,${c.color},${c.color}dd)"><div class="bg">${c.icon}</div><div class="n">Chapter ${ac+1}/${CH.length}</div><div class="t">${c.icon} ${c.title}</div><div class="s">${c.subtitle}</div></div>`;
+if(passed[c.id])h+=`<div class="gc" style="text-align:center;border-color:var(--success);animation:pop .4s"><span style="font-size:20px">✅</span> <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;color:var(--success)">CHAPTER PASSED</span></div>`;
+h+=`<div class="gc intro" style="border-left-color:${c.color}">${c.intro}</div>`;
+if(c.aoife)h+=`<div class="aoife"><div class="lb">📣 Aoife</div>${c.aoife}</div>`;
+if(c.body?.length){h+=`<div class="gc">`;c.body.forEach(l=>{h+=l===''?'<div style="height:6px"></div>':`<div class="bt">${l}</div>`});h+=`</div>`}
+// Trigger
+if(c.deepTrigger)h+=`<div class="trigger"><div class="lb">🎯 Tonight at Training</div><div class="tx">${c.deepTrigger}</div></div>`;
+// Steps
+h+=`<div class="gc"><div class="stl" style="color:${c.color}">✅ I Understand <span class="badge" style="background:${c.color}15;color:${c.color}">${dn.length}/${c.steps.length}</span></div>`;
+c.steps.forEach((s,i)=>{const d=dn.includes(i);h+=`<div class="step" onclick="ts('${c.id}',${i})" style="background:${d?c.color+'08':'transparent'};border:1.5px solid ${d?c.color:'transparent'}"><div class="chk" style="border-color:${d?c.color:'#d4d4d8'};background:${d?c.color:'transparent'}">${d?'✓':''}</div><span class="stxt${d?' dn':''}">${s}</span></div>`});
+h+=`</div>`;
+// Facts
+h+=`<div class="fact" style="background:linear-gradient(135deg,${c.accent},${c.accent}cc)"><span class="ico">⭐</span><div><div class="lb" style="color:#666">Key Fact</div><div class="tx" style="color:#333">${c.fact}</div></div></div>`;
+h+=`<div class="fact f-fluff"><span style="flex-shrink:0">${fluff(24)}</span><div><div class="lb">Fluff</div><div class="tx" style="font-style:italic">${c.fluff}</div></div></div>`;
+h+=`<div class="fact f-jp"><span class="ico">🇯🇵</span><div><div class="lb">Japan</div><div class="tx">${c.japan}</div></div></div>`;
+// Drills
+const pd=dd[c.id+'-p'],sd=dd[c.id+'-s'];
+h+=`<div class="gc"><div class="stl" style="color:var(--success)">🏋️ Drills</div><button class="drill" onclick="tdr('${c.id}-p')" style="background:${pd?'#f0fdf4':'#fff'};color:#166534;border-color:${pd?'#86efac':'#d4d4d8'}"><span style="font-size:12px">${pd?'✅':'🤝'}</span><div><div style="font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:#15803d;margin-bottom:1px">Partner</div>${c.pdrill}</div></button><button class="drill" onclick="tdr('${c.id}-s')" style="background:${sd?'#fffbeb':'#fff'};color:#92400e;border-color:${sd?'#fcd34d':'#d4d4d8'}"><span style="font-size:12px">${sd?'✅':'🥋'}</span><div><div style="font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:#b45309;margin-bottom:1px">Solo</div>${c.sdrill}</div></button></div>`;
+// Quiz
+if(c.quiz?.length){const s=qsc(c.id);
+h+=`<div class="qbox" style="border-color:${c.color};background:var(--card)"><div class="title" style="color:${c.color}">📝 Chapter Test</div><div class="sub">10/10 to unlock next chapter</div>`;
+if(passed[c.id])h+=`<div style="text-align:center;padding:10px"><div style="font-size:36px;animation:pulse 1s infinite">🏆</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:var(--success);margin:4px 0">PASSED ${s.ok}/${s.t}</div><button onclick="rq('${c.id}')" style="border:none;background:#f4f4f5;padding:4px 10px;border-radius:6px;font-size:9px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--muted)">Retake</button></div>`;
+else{if(s.d>0)h+=`<div style="text-align:center;margin-bottom:6px"><span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;background:${s.ok===s.d?'#dcfce7;color:#166534':'#fee2e2;color:#991b1b'}">${s.ok}/${s.d}${s.d===s.t&&s.ok<s.t?' — Need 10/10!':''}</span></div>`;
+if(s.d===s.t&&s.ok<s.t)h+=`<div style="text-align:center;margin-bottom:8px"><button onclick="rq('${c.id}')" style="border:none;background:${c.color};color:#fff;padding:6px 14px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;cursor:pointer">🔄 Try Again</button></div>`;
+c.quiz.forEach((qq,qi)=>{const k=c.id+'-'+qi,ans=qa[k],wt=wrongTyping[k];
+h+=`<div class="qq">Q${qi+1}. ${qq.q}</div>`;
+qq.a.forEach((aa,ai)=>{const isA=ans!==undefined,isC=ai===qq.c,isW=ai===ans&&!isC;
+h+=`<div class="qa ${isA?(isC?'ok':(isW?'no':'ds')):''}" onclick="aq2('${c.id}',${qi},${ai})">${aa}</div>`});
+// Type correction for wrong answers
+if(wt&&!wt.typed)h+=`<div class="typebox"><input id="ti-${k}" placeholder="Type the correct answer..." autocomplete="off"><button onclick="typeCorrect('${k}')">Submit</button></div><div style="font-size:9px;color:var(--danger);font-weight:600;margin-bottom:6px">✍️ Type the correct answer to continue</div>`})}
+h+=`</div>`}
+// Deep Learning — WHY questions
+if(c.deepWhy?.length){h+=`<div class="deep"><div class="title">🤔 Explain WHY</div>`;
+c.deepWhy.forEach((w,i)=>{const k=c.id+'-why-'+i;h+=`<div class="q">${w}</div><textarea id="deep-${k}" placeholder="Write your answer...">${deepAnswers[k]||''}</textarea><button onclick="saveDeep('${k}')" style="border:none;background:var(--accent);color:#fff;border-radius:6px;padding:4px 10px;font-size:9px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px">💾 Save</button> ${deepAnswers[k]?'<span class="saved">✓ Saved</span>':''}`});
+h+=`</div>`}
+// Scenario
+if(c.deepScenario){const sk=c.id+'-scenario';h+=`<div class="deep"><div class="title">🎬 Scenario</div><div class="q">${c.deepScenario}</div><textarea id="deep-${sk}" placeholder="Describe your plan...">${deepAnswers[sk]||''}</textarea><button onclick="saveDeep('${sk}')" style="border:none;background:var(--accent);color:#fff;border-radius:6px;padding:4px 10px;font-size:9px;font-weight:700;cursor:pointer;font-family:inherit">💾 Save</button> ${deepAnswers[sk]?'<span class="saved">✓ Saved</span>':''}</div>`}
+// Teach Fluff
+if(c.deepTeach){const tk=c.id+'-teach';h+=`<div class="deep" style="border-color:#111;background:linear-gradient(135deg,#f4f4f5,#e4e4e7)"><div class="title" style="color:#111">${fluff(20)} Teach Fluff!</div><div class="q" style="color:#333">${c.deepTeach}</div><textarea id="deep-${tk}" placeholder="Explain it to Fluff in your own words...">${deepAnswers[tk]||''}</textarea><button onclick="saveDeep('${tk}')" style="border:none;background:#111;color:#fff;border-radius:6px;padding:4px 10px;font-size:9px;font-weight:700;cursor:pointer;font-family:inherit">💾 Save</button> ${deepAnswers[tk]?'<span class="saved">✓ Saved</span>':''}</div>`}
+h+=`</div>`;
+// Bottom nav
+const nu=ac<CH.length-1&&ul(ac+1);
+h+=`<div class="bn"><button class="ar" ${ac===0?'disabled':''} onclick="sDir='r';nv(${ac-1})" style="background:${ac===0?'#d4d4d8':c.color}">‹</button><div class="dots">`;
+CH.forEach((_,i)=>{const u=ul(i);h+=`<button class="d" onclick="${u?'nv('+i+')':''}" style="width:${i===ac?'12px':'3px'};background:${i===ac?c.color:u?c.color+'25':'#e4e4e7'}"></button>`});
+h+=`</div><button class="ar" ${nu?'':'disabled'} onclick="sDir='l';nv(${ac+1})" style="background:${nu?c.color:'#d4d4d8'}">›</button></div>`;
+return h}
+
+// ===== PRE-TRAINING =====
+function rPre(){
+const triggers=CH.filter(c=>c.deepTrigger&&passed[c.id]).map(c=>({icon:c.icon,title:c.title,trigger:c.deepTrigger}));
+const recent=triggers.length?triggers.slice(-5):CH.slice(0,3).map(c=>({icon:c.icon,title:c.title,trigger:c.deepTrigger||'Complete this chapter to unlock triggers!'}));
+let h=`<div class="hdr" style="border-bottom-color:var(--accent)"><button class="hb" onclick="V='home';rn()">🏠</button><div class="ht" style="color:var(--accent)">🚗 PRE-TRAINING</div></div>`;
+h+=`<div style="flex:1;overflow-y:auto;padding:14px 12px"><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;margin-bottom:4px">Tonight's Focus</div><div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:12px">Read these in the car on the way to training!</div>`;
+recent.forEach((t,i)=>{h+=`<div class="pre-card"><div class="lb">${t.icon} ${t.title}</div><div class="tx">${t.trigger}</div></div>`});
+h+=`<div class="gc" style="text-align:center;margin-top:8px"><div style="font-size:28px;margin-bottom:4px">${fluff(36)}</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;color:var(--accent)">Fluff says: Go smash it tonight! 🐱</div></div>`;
+h+=`</div>`;return h}
+
+// ===== POST-TRAINING LOG =====
+function rPost(){
+let h=`<div class="hdr" style="border-bottom-color:var(--accent)"><button class="hb" onclick="V='home';rn()">🏠</button><div class="ht" style="color:var(--accent)">📝 TRAINING LOG</div></div>`;
+h+=`<div style="flex:1;overflow-y:auto;padding:14px 12px"><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;margin-bottom:10px">How Was Training?</div>`;
+h+=`<div class="gc"><div style="font-weight:700;font-size:11px;color:var(--success);margin-bottom:3px">✅ What did I do WELL?</div><textarea id="log-w" class="log-entry" placeholder="I attacked fast, I used combos..."></textarea>`;
+h+=`<div style="font-weight:700;font-size:11px;color:var(--danger);margin-bottom:3px">❌ What did I FORGET?</div><textarea id="log-f" class="log-entry" placeholder="I forgot to circle, I started slow..."></textarea>`;
+h+=`<div style="font-weight:700;font-size:11px;color:var(--accent);margin-bottom:3px">🎯 Next time I will focus on:</div><textarea id="log-n" class="log-entry" placeholder="Starting in 3 seconds, sleeve first..."></textarea>`;
+h+=`<button onclick="saveLog()" style="width:100%;border:none;background:var(--accent);color:#fff;border-radius:10px;padding:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;cursor:pointer;margin-top:4px">💾 Save Log Entry</button></div>`;
+if(trainLog.length){h+=`<div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;margin:12px 0 6px;color:var(--muted)">Previous Entries</div>`;
+trainLog.slice(0,5).forEach(e=>{h+=`<div class="log-past"><b>${e.d}</b><br>✅ ${e.w||'—'}<br>❌ ${e.f||'—'}<br>🎯 ${e.n||'—'}</div>`})}
+h+=`</div>`;return h}
+
+// ===== DAILY DRILL (Spaced Repetition) =====
+let ddQs=[],ddIdx=0,ddWrong=[];
+function startDaily(){const passedChs=CH.filter(c=>passed[c.id]);if(!passedChs.length){sFluff('Pass some chapters first!');V='home';return}const allQ=passedChs.flatMap(c=>(c.quiz||[]).map(q=>({...q,cid:c.id})));
+// Prioritize previously wrong ones
+const wrongKeys=Object.keys(wrongTyping).filter(k=>wrongTyping[k]);
+ddQs=allQ.sort(()=>Math.random()-.5).slice(0,5);ddIdx=0;ddWrong=[];rn()}
+function ddAns(ai){const q=ddQs[ddIdx];if(ai===q.c)sFluff('✓');else{ddWrong.push(ddQs[ddIdx]);sFluff('Review this one!')}ddIdx++;rn()}
+function rDaily(){
+let h=`<div class="hdr" style="border-bottom-color:var(--accent)"><button class="hb" onclick="V='home';rn()">🏠</button><div class="ht" style="color:var(--accent)">🧠 DAILY DRILL</div></div>`;
+h+=`<div style="flex:1;overflow-y:auto;padding:14px 12px">`;
+if(ddIdx>=ddQs.length){h+=`<div style="text-align:center;animation:pop .4s"><div style="font-size:44px">${ddWrong.length===0?'🏆':'🧠'}</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;margin:8px 0;color:var(--accent)">${ddQs.length-ddWrong.length}/${ddQs.length} correct!</div>`;
+if(ddWrong.length)h+=`<div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:8px">Review these:</div>${ddWrong.map(q=>`<div style="font-size:10px;font-weight:700;color:var(--danger);margin-bottom:4px">• ${q.q} → ${q.a[q.c]}</div>`).join('')}`;
+h+=`<button onclick="startDaily();rn()" style="margin-top:10px;border:none;background:var(--accent);color:#fff;padding:8px 16px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;cursor:pointer">Again!</button></div>`}
+else{const q=ddQs[ddIdx];h+=`<div style="text-align:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;color:var(--muted);margin-bottom:8px">${ddIdx+1} of ${ddQs.length}</div>`;
+h+=`<div class="dd-q">${q.q}</div>`;q.a.forEach((a,i)=>{h+=`<div class="qa" onclick="ddAns(${i})">${a}</div>`})}
+h+=`</div>`;return h}
+
+// ===== STATS =====
+function rStats(){
+const tQ=CH.reduce((s,c)=>s+(c.quiz?.length||0),0),aQ=Object.keys(qa).length;
+const cQ=Object.entries(qa).filter(([k,v])=>{const[ci,qi]=k.split('-');return CH.find(x=>x.id===ci)?.quiz?.[qi]?.c===v}).length;
+let h=`<div class="hdr" style="border-bottom-color:var(--accent)"><button class="hb" onclick="V='home';rn()">🏠</button><div class="ht" style="color:var(--accent)">📊 STATS</div></div>`;
+h+=`<div style="flex:1;overflow-y:auto;padding:14px 12px"><div class="gc"><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:var(--accent);margin-bottom:6px">Progress</div>`;
+h+=`<div class="srow"><span class="slb">Chapters Passed</span><span class="svl">${Object.keys(passed).length}/${CH.length}</span></div>`;
+h+=`<div class="srow"><span class="slb">Questions Answered</span><span class="svl">${aQ}/${tQ}</span></div>`;
+h+=`<div class="srow"><span class="slb">Correct Answers</span><span class="svl">${cQ} (${aQ?Math.round(cQ/aQ*100):0}%)</span></div>`;
+h+=`<div class="srow"><span class="slb">Training Streak</span><span class="svl">🔥 ${streak.c} days</span></div>`;
+h+=`<div class="srow"><span class="slb">Best Streak</span><span class="svl">🏆 ${streak.b} days</span></div>`;
+h+=`<div class="srow"><span class="slb">Speed Quiz Best</span><span class="svl">⏱️ ${sBest<Infinity?(sBest/1000).toFixed(1)+'s':'--'}</span></div>`;
+h+=`<div class="srow"><span class="slb">Training Logs</span><span class="svl">📝 ${trainLog.length}</span></div>`;
+h+=`<div class="srow"><span class="slb">Days to Venray</span><span class="svl">🇳🇱 ${dTV()}</span></div>`;
+h+=`</div></div>`;return h}
+
+// ===== THROW MATCH GAME =====
+const mPairs=[{j:'Seoi-nage',e:'Shoulder Throw'},{j:'O-goshi',e:'Hip Throw'},{j:'Ouchi-gari',e:'Inner Reap'},{j:'Osoto-gari',e:'Outer Reap'},{j:'Tani-otoshi',e:'Valley Drop'},{j:'De-ashi-barai',e:'Foot Sweep'},{j:'Kesa-gatame',e:'Scarf Hold'},{j:'Mune-gatame',e:'Chest Hold'}];
+function startMG(){gS={p:mPairs.sort(()=>Math.random()-.5).slice(0,5),a:{},sel:null,shuf:null};gS.shuf=gS.p.map((_,i)=>i).sort(()=>Math.random()-.5);rn()}
+function rMatch(){let h=`<div class="hdr" style="border-bottom-color:var(--accent)"><button class="hb" onclick="V='home';rn()">🏠</button><div class="ht" style="color:var(--accent)">🎯 THROW MATCH</div></div><div style="flex:1;overflow-y:auto;padding:14px 12px">`;
+h+=`<div style="font-size:10px;font-weight:600;color:var(--muted);text-align:center;margin-bottom:10px">Tap a name → tap its meaning!</div>`;
+gS.p.forEach((p,i)=>{const done=gS.a[i]!==undefined;h+=`<div class="qa ${gS.sel===i?'ok':''} ${done?(gS.a[i]?'ok':'no'):''}" onclick="${done?'':`gS.sel=${i};rn()`}" style="${done?'opacity:.5;pointer-events:none':''}">${p.j} ${done?(gS.a[i]?'✅':'❌'):''}</div>`});
+h+=`<div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:10px;color:var(--muted);margin:8px 0 4px">English meanings:</div>`;
+gS.shuf.forEach(idx=>{const used=gS.a[idx]===true;h+=`<div class="qa ${used?'ds':''}" onclick="${gS.sel!==null&&!used?`checkMG(${idx})`:''}" style="${used?'opacity:.3':''}">${gS.p[idx].e}</div>`});
+const ok=Object.values(gS.a).filter(v=>v).length;
+if(ok===gS.p.length)h+=`<div style="text-align:center;margin-top:10px;animation:pop .4s"><div style="font-size:36px">🎉</div><button onclick="startMG();rn()" style="margin-top:6px;border:none;background:var(--accent);color:#fff;padding:8px 14px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;cursor:pointer">Again!</button></div>`;
+h+=`</div>`;return h}
+function checkMG(ti){if(gS.sel===null)return;gS.a[gS.sel]=gS.sel===ti;if(gS.sel===ti)sFluff('Correct! ✓');else sFluff('Not that one!');gS.sel=null;rn()}
+
+// ===== SPEED QUIZ =====
+let sqS=0,sqQ=[],sqI=0,sqC=0,sqD=false,sqE=0;
+function startSQ(){const all=CH.flatMap(c=>(c.quiz||[]).map(q=>({...q})));sqQ=all.sort(()=>Math.random()-.5).slice(0,10);sqI=0;sqC=0;sqD=false;sqS=Date.now();rn()}
+function sqA(ai){if(sqD)return;if(ai===sqQ[sqI].c)sqC++;sqI++;if(sqI>=10){sqD=true;sqE=Date.now();if(sqE-sqS<sBest&&sqC===10){sBest=sqE-sqS;sv()}if(sqC===10)conf()}rn()}
+function rSpeed(){let h=`<div class="hdr" style="border-bottom-color:#ef4444"><button class="hb" style="background:#ef4444" onclick="V='home';rn()">🏠</button><div class="ht" style="color:#ef4444">⏱️ SPEED QUIZ</div></div><div style="flex:1;overflow-y:auto;padding:14px 12px">`;
+if(sqD){const t=sqE-sqS;h+=`<div style="text-align:center;animation:pop .4s"><div style="font-size:44px">${sqC===10?'🏆':'⏱️'}</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;color:#ef4444;margin:6px 0">${(t/1000).toFixed(1)}s</div><div style="font-size:11px;font-weight:700;color:var(--muted)">${sqC}/10${sqC===10&&t<=sBest?' — NEW BEST! 🏆':''}</div><button onclick="startSQ();rn()" style="margin-top:10px;border:none;background:#ef4444;color:#fff;padding:8px 16px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;cursor:pointer">Again!</button></div>`}
+else{h+=`<div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;text-align:center;color:#ef4444">${Math.round((Date.now()-sqS)/1000)}s</div>`;
+h+=`<div style="font-size:10px;font-weight:600;color:var(--muted);text-align:center;margin-bottom:8px">Best: ${sBest<Infinity?(sBest/1000).toFixed(1)+'s':'--'} | Q${sqI+1}/10</div>`;
+const q=sqQ[sqI];h+=`<div style="font-weight:800;font-size:13px;text-align:center;margin:10px 0">${q.q}</div>`;
+q.a.forEach((a,i)=>{h+=`<div class="qa" onclick="sqA(${i})" style="padding:11px">${a}</div>`})}
+h+=`</div>`;return h}
+
+// ===== FLUFF'S HUNT (HARDER VERSION) =====
+let hScore=0,hTime=25,hActive=false,hInt=null,hMice=[],hMissed=0;
+function startHunt(){hScore=0;hTime=25;hActive=true;hMice=[];hMissed=0;clearInterval(hInt);
+hInt=setInterval(()=>{hTime--;if(hTime<=0){hActive=false;clearInterval(hInt)}rn()},1000);spawnH();rn()}
+function spawnH(){if(!hActive)return;
+const isFake=Math.random()<.2;// 20% chance of fake (sock/toy)
+const speed=Math.max(800,2000-hScore*50);// gets faster as score increases
+const size=Math.max(16,24-hScore);// gets smaller
+const m={id:Date.now(),x:Math.random()*80+5,y:Math.random()*65+8,fake:isFake,size};
+hMice.push(m);
+setTimeout(()=>{if(hMice.find(x=>x.id===m.id)){hMice=hMice.filter(x=>x.id!==m.id);if(!m.fake)hMissed++;if(hActive)rn()}},speed);
+if(hActive)setTimeout(spawnH,400+Math.random()*400)}
+function catchH(id){const m=hMice.find(x=>x.id===id);if(!m)return;hMice=hMice.filter(x=>x.id!==id);if(m.fake){hScore=Math.max(0,hScore-2);sFluff('That was a sock! -2')}else{hScore++;sFluff('+1!')}rn()}
+function rHunt(){let h=`<div class="hdr" style="border-bottom-color:#16a34a"><button class="hb" style="background:#16a34a" onclick="hActive=false;clearInterval(hInt);V='home';rn()">🏠</button><div class="ht" style="color:#16a34a">🐱 FLUFF'S HUNT</div></div><div style="flex:1;overflow-y:auto;padding:14px 12px">`;
+if(!hActive&&hTime<=0){const rating=hScore>=20?'LEGENDARY!':hScore>=15?'Amazing!':hScore>=10?'Great!':hScore>=5?'Good effort!':'Keep practising!';
+h+=`<div style="text-align:center;animation:pop .4s"><div style="font-size:44px">${fluff(48)}</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:#16a34a;margin:6px 0">${hScore} mice!</div><div style="font-size:11px;font-weight:700;color:var(--muted)">${rating}<br>Missed: ${hMissed} | Fakes tapped: watch out for socks! 🧦</div><button onclick="startHunt()" style="margin-top:10px;border:none;background:#16a34a;color:#fff;padding:8px 16px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;cursor:pointer">Play Again!</button></div>`}
+else if(!hActive){h+=`<div style="text-align:center;padding:30px 0"><div style="font-size:52px;margin-bottom:8px">${fluff(56)}</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:#16a34a">Fluff's Mouse Hunt!</div><p style="font-size:11px;color:var(--muted);font-weight:600;margin:6px 0">🐭 Tap mice before they escape!<br>🧦 DON'T tap socks — they lose points!<br>⚡ Gets faster as you score more!<br>⏱️ 25 seconds — how many can you catch?</p><button onclick="startHunt()" style="border:none;background:#16a34a;color:#fff;padding:10px 20px;border-radius:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-top:6px">START!</button></div>`}
+else{h+=`<div class="game-area">`;
+// Stars
+for(let i=0;i<15;i++)h+=`<div class="stars" style="left:${Math.random()*100}%;top:${Math.random()*40}%"></div>`;
+h+=`<div class="hud"><span>⏱️ ${hTime}s</span><span>🐭 ${hScore}</span></div>`;
+hMice.forEach(m=>{h+=`<div class="${m.fake?'fake':'mouse'}" onclick="catchH(${m.id})" style="left:${m.x}%;top:${m.y}%;font-size:${m.size}px">${m.fake?'🧦':'🐭'}</div>`});
+h+=`<div class="cat-game">${fluff(36)}</div></div>`}
+h+=`</div>`;return h}
+
+// Timer for speed quiz
+setInterval(()=>{if(V==='speed'&&!sqD&&sqI<10){const el=document.querySelector('[style*="font-size:28px"]');if(el)el.textContent=Math.round((Date.now()-sqS)/1000)+'s'}},250);
+
+// Swipe
+let tx=0;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:1});
+document.addEventListener('touchend',e=>{if(V!=='ch')return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>60){const n=d<0?ac+1:ac-1;if(n>=0&&n<CH.length&&ul(n)){sDir=d<0?'l':'r';nv(n)}}},{passive:1});
+
+rn();
+</script></body></html>
